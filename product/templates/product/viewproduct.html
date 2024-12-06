@@ -1,0 +1,158 @@
+{% extends 'pages/base.html' %}
+{% load static %}
+{% block title %}View Products{% endblock title %}
+{% block content %}
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-6">
+            <h2 class="custom-heading">Product List</h2>
+        </div>
+        <div class="col-md-6 text-end">
+            <a href="{% url 'addproduct' %}" class="btn btn-primary custom-button">
+                <i class="fas fa-plus"></i> Add New Product
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>HSN Code</th>
+                            <th>Name</th>
+                            <th>Category</th>
+                            <th>Unit</th>
+                            <th>Price (₹)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if products %}
+                            {% for product in products %}
+                                <tr>
+                                    <td>{{ product.hsn_code }}</td>
+                                    <td>{{ product.name }}</td>
+                                    <td>
+                                        {% for value, label in product.CATEGORY_CHOICES %}
+                                            {% if value == product.category %}
+                                                {{ label }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>
+                                        {% for value, label in product.UNIT_CHOICES %}
+                                            {% if value == product.unit %}
+                                                {{ label }}
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                    <td>₹{{ product.price }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-info me-2" 
+                                                data-bs-toggle="modal" 
+                                                data-bs-target="#productDetailModal{{ product.id }}">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+
+                                <!-- Detail Modal for each product -->
+                                <div class="modal fade" id="productDetailModal{{ product.id }}" tabindex="-1">
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">Product Details</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="row">
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="fw-bold">HSN Code:</label>
+                                                        <p>{{ product.hsn_code }}</p>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="fw-bold">Name:</label>
+                                                        <p>{{ product.name }}</p>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="fw-bold">Category:</label>
+                                                        <p>
+                                                            {% for value, label in product.CATEGORY_CHOICES %}
+                                                                {% if value == product.category %}
+                                                                    {{ label }}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="fw-bold">Unit:</label>
+                                                        <p>
+                                                            {% for value, label in product.UNIT_CHOICES %}
+                                                                {% if value == product.unit %}
+                                                                    {{ label }}
+                                                                {% endif %}
+                                                            {% endfor %}
+                                                        </p>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="fw-bold">Price:</label>
+                                                        <p>₹{{ product.price }}</p>
+                                                    </div>
+                                                    <div class="col-md-6 mb-3">
+                                                        <label class="fw-bold">Created At:</label>
+                                                        <p>{{ product.created_at|date:"d M Y" }}</p>
+                                                    </div>
+                                                    <div class="col-12 mb-3">
+                                                        <label class="fw-bold">Description:</label>
+                                                        <p>{{ product.description|default:"-" }}</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="6" class="text-center">No products found</td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .table th {
+        background-color: #f8f9fa;
+    }
+    .custom-button {
+        border-radius: 4px;
+    }
+    .modal-body label {
+        color: #666;
+        margin-bottom: 0.2rem;
+    }
+    .modal-body p {
+        margin-bottom: 0;
+    }
+</style>
+{% endblock %}

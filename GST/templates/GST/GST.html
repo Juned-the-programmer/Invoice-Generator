@@ -1,0 +1,250 @@
+{% extends 'pages/base.html' %}
+{% load static %}
+{% block title %}GST Sale{% endblock title %}
+{% block content %}
+<style>
+    input[readonly] {
+    background-color: #e9ecef !important;
+    cursor: not-allowed;
+}
+</style>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="text-center mb-4">GST Sale</h2>
+            
+            <!-- Customer Details Form -->
+            <form class="bg-white p-4 rounded shadow-sm custom-form mb-4">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="billDate" class="form-label fw-bold">Date</label>
+                        <input type="date" class="form-control custom-input bg-light" id="billDate" required readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="billNo" class="form-label fw-bold">Bill Number</label>
+                        <input type="text" class="form-control custom-input bg-light" id="billNo" required readonly>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label for="customerName" class="form-label fw-bold">Customer Name</label>
+                    <select class="form-control custom-input" id="customerName" required>
+                        <option value="">Select a customer</option>
+                        {% for customer in customers %}
+                            <option value="{{ customer.id }}">{{ customer.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </form>
+
+            <!-- Sale Products Section -->
+            <div class="bg-white p-4 rounded shadow-sm custom-form">
+                <h3 class="mb-4 custom-heading">Add Sale Products</h3>
+                
+                <div class="row mb-3">
+                    <div class="col-md-4">
+                        <label for="productName" class="form-label fw-bold">Product Name</label>
+                        <select class="form-control custom-input" id="productName" required>
+                            <option value="">Select a product</option>
+                            {% for product in products %}
+                                <option value="{{ product.id }}" 
+                                        data-unit="{{ product.unit }}" 
+                                        data-rate="{{ product.rate }}">
+                                    {{ product.name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="unit" class="form-label fw-bold">Unit</label>
+                        <input type="text" class="form-control custom-input" id="unit" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="rate" class="form-label fw-bold">Rate</label>
+                        <input type="number" class="form-control custom-input" id="rate" required>
+                    </div>
+                    <div class="col-md-2">
+                        <label for="quantity" class="form-label fw-bold">Qty.</label>
+                        <input type="number" class="form-control custom-input" id="quantity" required>
+                    </div>
+                    <div class="col-md-1">
+                        <label for="discount" class="form-label fw-bold">Dis(%)</label>
+                        <input type="number" class="form-control custom-input" id="discount" required>
+                    </div>
+                    <div class="col-md-1 d-flex align-items-end">
+                        <button type="button" class="btn btn-secondary custom-button w-100">Add</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- After the product input form, add this table -->
+            <div class="table-responsive mt-4">
+                <table class="table table-bordered" id="productsTable">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product Name</th>
+                            <th>Unit</th>
+                            <th>Rate</th>
+                            <th>Qty.</th>
+                            <th>Dis(%)</th>
+                            <th>Net Rate</th>
+                            <th>Amount</th>
+                            <th>GST%</th>
+                            <th>CGST</th>
+                            <th>SGST</th>
+                            <th>IGST</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody">
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="6" class="text-end fw-bold">Sub Total:</td>
+                            <td id="subTotal" class="fw-bold">0.00</td>
+                            <td colspan="4" class="text-end fw-bold">Total GST:</td>
+                            <td id="totalGST" class="fw-bold">0.00</td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td colspan="11" class="text-end fw-bold">Grand Total:</td>
+                            <td id="grandTotal" class="fw-bold">0.00</td>
+                            <td></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add this JavaScript at the end of your file -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize date with current date
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('billDate').value = today;
+
+    // Initialize bill number (you might want to fetch this from backend)
+    document.getElementById('billNo').value = generateBillNumber();
+
+    const addButton = document.querySelector('.custom-button');
+    addButton.addEventListener('click', addProduct);
+
+    function generateBillNumber() {
+        // This is a simple example - you might want to get this from your backend
+        return 'EST-' + Date.now();
+    }
+
+    // Add product selection handler
+    const productSelect = document.getElementById('productName');
+    productSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        if (selectedOption.value) {
+            // Auto-fill unit and rate from the selected product
+            document.getElementById('unit').value = selectedOption.dataset.unit;
+            document.getElementById('rate').value = selectedOption.dataset.rate;
+        } else {
+            // Clear fields if no product is selected
+            document.getElementById('unit').value = '';
+            document.getElementById('rate').value = '';
+        }
+    });
+
+    function addProduct() {
+        // Get form values
+        const productSelect = document.getElementById('productName');
+        const selectedOption = productSelect.options[productSelect.selectedIndex];
+        const productName = selectedOption.text;
+        const productId = productSelect.value;
+
+        if (!productId) {
+            alert('Please select a product');
+            return;
+        }
+
+        // Calculate values
+        const unit = document.getElementById('unit').value;
+        const rate = parseFloat(document.getElementById('rate').value);
+        const quantity = parseFloat(document.getElementById('quantity').value);
+        const discount = parseFloat(document.getElementById('discount').value) || 0;
+        const gstRate = 18; // You might want to make this dynamic based on product category
+
+        // Validate inputs
+        if (!productName || !unit || !rate || !quantity) {
+            alert('Please fill all required fields');
+            return;
+        }
+
+        // Calculate values
+        const netRate = rate - (rate * discount / 100);
+        const amount = netRate * quantity;
+        const gstAmount = (amount * gstRate) / 100;
+        const cgst = gstAmount / 2;
+        const sgst = gstAmount / 2;
+        const igst = 0; // Set this based on whether it's interstate sale
+        const total = amount + gstAmount;
+
+        // Create new table row
+        const tbody = document.getElementById('productTableBody');
+        const newRow = tbody.insertRow();
+        newRow.innerHTML = `
+            <td>${productName}</td>
+            <td>${unit}</td>
+            <td>${rate.toFixed(2)}</td>
+            <td>${quantity}</td>
+            <td>${discount}</td>
+            <td>${netRate.toFixed(2)}</td>
+            <td>${amount.toFixed(2)}</td>
+            <td>${gstRate}</td>
+            <td>${cgst.toFixed(2)}</td>
+            <td>${sgst.toFixed(2)}</td>
+            <td>${igst.toFixed(2)}</td>
+            <td>${total.toFixed(2)}</td>
+            <td>
+                <button class="btn btn-danger btn-sm" onclick="removeProduct(this)">
+                    <i class="fas fa-trash"></i> Delete
+                </button>
+            </td>
+        `;
+
+        clearForm();
+        updateTotals();
+    }
+
+    function clearForm() {
+        document.getElementById('productName').value = '';  // Reset select to default
+        document.getElementById('unit').value = '';
+        document.getElementById('rate').value = '';
+        document.getElementById('quantity').value = '';
+        document.getElementById('discount').value = '';
+    }
+
+    function updateTotals() {
+        const tbody = document.getElementById('productTableBody');
+        let subTotal = 0;
+        let totalGST = 0;
+        let grandTotal = 0;
+        
+        for (let row of tbody.rows) {
+            subTotal += parseFloat(row.cells[6].textContent);
+            const cgst = parseFloat(row.cells[8].textContent);
+            const sgst = parseFloat(row.cells[9].textContent);
+            const igst = parseFloat(row.cells[10].textContent);
+            totalGST += cgst + sgst + igst;
+            grandTotal += parseFloat(row.cells[11].textContent);
+        }
+        
+        document.getElementById('subTotal').textContent = subTotal.toFixed(2);
+        document.getElementById('totalGST').textContent = totalGST.toFixed(2);
+        document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+    }
+
+    function removeProduct(button) {
+        const row = button.closest('tr');
+        row.remove();
+        updateTotals();
+    }
+});
+</script>
+{% endblock %}

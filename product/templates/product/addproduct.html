@@ -1,0 +1,72 @@
+{% extends 'pages/base.html' %}
+{% load static %}
+{% block title %}Add Product{% endblock title %}
+{% block content %}
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4">Add New Product</h2>
+            <form class="needs-validation bg-white p-4 rounded shadow-sm custom-form" novalidate method="POST">
+                {% csrf_token %}
+                <div class="mb-4">
+                    <label for="hsnCode" class="form-label fw-bold">HSN Code</label>
+                    <input type="text" class="form-control" id="hsnCode" name="hsn_code"
+                           pattern="[0-9]{4,8}" 
+                           title="HSN code should be between 4 to 8 digits"
+                           placeholder="Enter HSN Code" required>
+                    <div class="form-text text-muted">Enter 4-8 digit HSN code as per GST guidelines</div>
+                </div>
+                <div class="mb-4">
+                    <label for="productName" class="form-label fw-bold">Product Name</label>
+                    <input type="text" class="form-control" id="productName" name="productName" required>
+                </div>
+                <div class="row mb-4">
+                    <div class="col">
+                        <label for="productCategory" class="form-label fw-bold">Product Category</label>
+                        <select class="form-select" id="productCategory" name="category" required>
+                            <option value="">Select a category</option>
+                            {% for value, label in category_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col">
+                        <label for="productUnit" class="form-label fw-bold">Unit</label>
+                        <select class="form-select" id="productUnit" name="unit" required>
+                            <option value="">Select a unit</option>
+                            {% for value, label in unit_choices %}
+                                <option value="{{ value }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="productPrice" class="form-label fw-bold">Price</label>
+                    <div class="input-group">
+                        <span class="input-group-text">₹</span>
+                        <input type="number" class="form-control" id="productPrice" name="price" 
+                               step="0.01" min="0" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label for="productDescription" class="form-label fw-bold">Description</label>
+                    <textarea class="form-control" id="productDescription" name="description" rows="3"></textarea>
+                </div>
+                <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-primary btn-lg">Add Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

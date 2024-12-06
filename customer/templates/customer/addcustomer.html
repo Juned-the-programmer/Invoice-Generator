@@ -1,0 +1,148 @@
+{% extends 'pages/base.html' %}
+{% load static %}
+{% block title %}Add Customer{% endblock title %}
+{% block content %}
+{% if messages %}
+<div class="container mt-3">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <h2 class="text-center mb-4 custom-heading">Add New Customer</h2>
+            <form class="bg-white p-4 rounded shadow-sm custom-form" method="POST" action="{% url 'addcustomer' %}">
+                {% csrf_token %}
+                <!-- First Name and Last Name side by side -->
+                <div class="row mb-3 custom-row">
+                    <div class="col-md-6 custom-col">
+                        <label for="firstName" class="form-label fw-bold">First Name</label>
+                        <input type="text" class="form-control custom-input" id="firstName" name="firstName" required>
+                    </div>
+                    <div class="col-md-6 custom-col">
+                        <label for="lastName" class="form-label fw-bold">Last Name</label>
+                        <input type="text" class="form-control custom-input" id="lastName" name="lastName" required>
+                    </div>
+                </div>
+
+                <!-- Email and Phone Number side by side -->
+                <div class="row mb-3 custom-row">
+                    <div class="col-md-6 custom-col">
+                        <label for="customerEmail" class="form-label fw-bold">Email</label>
+                        <input type="email" class="form-control custom-input" id="customerEmail" name="customerEmail" required>
+                    </div>
+                    <div class="col-md-6 custom-col">
+                        <label for="customerPhone" class="form-label fw-bold">Phone Number</label>
+                        <input type="tel" class="form-control custom-input" id="customerPhone" name="customerPhone">
+                    </div>
+                </div>
+
+                <!-- GST Number -->
+                <div class="mb-3 custom-row">
+                    <label for="customerGST" class="form-label fw-bold">GST Number</label>
+                    <input type="text" class="form-control custom-input" id="customerGST" name="customerGST" pattern="^[0-9]{2}[A-Z]{5}[0-9]{4}[A-Z]{1}[1-9A-Z]{1}Z[0-9A-Z]{1}$" title="Enter a valid 15-digit GST number (e.g., 22AAAAA0000A1Z5)">
+                    <div class="form-text text-muted">Enter 15-digit GST number (e.g., 22AAAAA0000A1Z5)</div>
+                </div>
+
+                <!-- Address -->
+                <div class="mb-3 custom-row">
+                    <label for="customerAddress" class="form-label fw-bold">Address</label>
+                    <textarea class="form-control custom-input" id="customerAddress" name="customerAddress" rows="2"></textarea>
+                </div>
+
+                <!-- City, State and Landmark -->
+                <div class="row mb-3 custom-row">
+                    <div class="col-md-4 custom-col">
+                        <label for="customerState" class="form-label fw-bold">State</label>
+                        <select class="form-select custom-select" id="customerState" required>
+                            <option value="">Select State</option>
+                        </select>
+                        <input type="hidden" name="customerState" id="customerStateHidden">
+                    </div>
+                    <div class="col-md-4 custom-col">
+                        <label for="customerCity" class="form-label fw-bold">City</label>
+                        <select class="form-select custom-select" id="customerCity" name="customerCity" disabled>
+                            <option value="">Select City</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 custom-col">
+                        <label for="customerLandmark" class="form-label custom-label">Landmark</label>
+                        <input type="text" class="form-control custom-input" id="customerLandmark" name="customerLandmark">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary custom-button">Add Customer</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Add this script section at the bottom of your content block -->
+<script>
+    const apiKey = 'NFZXSks0ZjI5b2RVVENTamtjbXhFSWRKZFl5Y3RGZ2pwOFhqMnlqVA==';
+    
+    // Fetch states when page loads
+    document.addEventListener('DOMContentLoaded', async () => {
+        try {
+            const response = await fetch("https://api.countrystatecity.in/v1/countries/IN/states", {
+                headers: {
+                    'X-CSCAPI-KEY': apiKey
+                }
+            });
+            const states = await response.json();
+            const stateSelect = document.getElementById('customerState');
+            
+            states.forEach(state => {
+                const option = document.createElement('option');
+                option.value = state.name;  // Store full name as value (for form submission)
+                option.textContent = state.name;  // Display full name
+                option.setAttribute('data-state-code', state.iso2);  // Store ISO code for API
+                stateSelect.appendChild(option);
+            });
+        } catch (error) {
+            console.error('Error fetching states:', error);
+        }
+    });
+
+    // Fetch cities when state is selected
+    document.getElementById('customerState').addEventListener('change', async function() {
+        const selectedOption = this.options[this.selectedIndex];
+        const stateCode = selectedOption.getAttribute('data-state-code');  // Get ISO code for API
+        const citySelect = document.getElementById('customerCity');
+        citySelect.innerHTML = '<option value="">Select City</option>';
+        
+        if (!this.value) {
+            citySelect.disabled = true;
+            return;
+        }
+
+        try {
+            const response = await fetch(`https://api.countrystatecity.in/v1/countries/IN/states/${stateCode}/cities`, {
+                headers: {
+                    'X-CSCAPI-KEY': apiKey
+                }
+            });
+            const cities = await response.json();
+            
+            cities.forEach(city => {
+                const option = document.createElement('option');
+                option.value = city.name;
+                option.textContent = city.name;
+                citySelect.appendChild(option);
+            });
+            
+            citySelect.disabled = false;
+            
+            // Set the hidden input with the selected state name
+            document.getElementById('customerStateHidden').value = this.value;
+        } catch (error) {
+            console.error('Error fetching cities:', error);
+        }
+    });
+</script>
+{% endblock %}
