@@ -30,7 +30,7 @@
                     <select class="form-control custom-input" id="customerName" required>
                         <option value="">Select a customer</option>
                         {% for customer in customers %}
-                            <option value="{{ customer.id }}">{{ customer.name }}</option>
+                            <option value="{{ customer.id }}" data-state="{{ customer.state }}">{{ customer.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -40,7 +40,7 @@
             <div class="bg-white p-4 rounded shadow-sm custom-form">
                 <h3 class="mb-4 custom-heading">Add Sale Products</h3>
                 
-                <div class="row mb-3">
+                <div class="row mb-3" id="productInputSection" style="opacity: 0.6; pointer-events: none;">
                     <div class="col-md-4">
                         <label for="productName" class="form-label fw-bold">Product Name</label>
                         <select class="form-control custom-input" id="productName" required>
@@ -48,7 +48,7 @@
                             {% for product in products %}
                                 <option value="{{ product.id }}" 
                                         data-unit="{{ product.unit }}" 
-                                        data-rate="{{ product.rate }}">
+                                        data-rate="{{ product.price }}">
                                     {{ product.name }}
                                 </option>
                             {% endfor %}
@@ -198,6 +198,38 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('quantity').value = '';
         document.getElementById('discount').value = '';
     }
+
+    // Add these at the beginning of your script
+    let customerState = '';
+    const productInputSection = document.getElementById('productInputSection');
+    const customerInfoSection = document.getElementById('customerInfoSection');
+    const customerStateInfo = document.getElementById('customerStateInfo');
+    
+    // Add the customer select event listener
+    const customerSelect = document.getElementById('customerName');
+    customerSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        
+        if (this.value) {
+            // Enable product section
+            productInputSection.style.opacity = '1';
+            productInputSection.style.pointerEvents = 'auto';
+            
+            // Show customer information
+            customerState = selectedOption.dataset.state;
+            customerInfoSection.style.display = 'block';
+            customerStateInfo.textContent = `Selected Customer State: ${customerState}`;
+        } else {
+            // Disable product section
+            productInputSection.style.opacity = '0.6';
+            productInputSection.style.pointerEvents = 'none';
+            clearForm();
+            
+            // Hide customer information
+            customerInfoSection.style.display = 'none';
+            customerState = '';
+        }
+    });
 });
 
 function removeProduct(button) {

@@ -30,7 +30,7 @@
                     <select class="form-control custom-input" id="customerName" required>
                         <option value="">Select a customer</option>
                         {% for customer in customers %}
-                            <option value="{{ customer.id }}">{{ customer.name }}</option>
+                            <option value="{{ customer.id }}" data-state="{{ customer.state }}">{{ customer.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
@@ -40,7 +40,7 @@
             <div class="bg-white p-4 rounded shadow-sm custom-form">
                 <h3 class="mb-4 custom-heading">Add Sale Products</h3>
                 
-                <div class="row mb-3">
+                <div class="row mb-3" id="productInputSection" style="opacity: 0.6; pointer-events: none;">
                     <div class="col-md-4">
                         <label for="productName" class="form-label fw-bold">Product Name</label>
                         <select class="form-control custom-input" id="productName" required>
@@ -48,7 +48,7 @@
                             {% for product in products %}
                                 <option value="{{ product.id }}" 
                                         data-unit="{{ product.unit }}" 
-                                        data-rate="{{ product.rate }}">
+                                        data-rate="{{ product.price }}">
                                     {{ product.name }}
                                 </option>
                             {% endfor %}
@@ -121,6 +121,8 @@
 <!-- Add this JavaScript at the end of your file -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    const BUSINESS_STATE = 'Gujarat'; // Default business state
+    let customerState = '';
     // Initialize date with current date
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('billDate').value = today;
@@ -177,12 +179,25 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Calculate values
-        const netRate = rate - (rate * discount / 100);
+         const netRate = rate - (rate * discount / 100);
         const amount = netRate * quantity;
         const gstAmount = (amount * gstRate) / 100;
-        const cgst = gstAmount / 2;
-        const sgst = gstAmount / 2;
-        const igst = 0; // Set this based on whether it's interstate sale
+        
+        let cgst = 0;
+        let sgst = 0;
+        let igst = 0;
+
+        if (customerState.toLowerCase() === BUSINESS_STATE.toLowerCase()) {
+            // Intra-state sale (within Gujarat)
+            cgst = gstAmount / 2;
+            sgst = gstAmount / 2;
+            igst = 0;
+        } else {
+            // Inter-state sale (outside Gujarat)
+            cgst = 0;
+            sgst = 0;
+            igst = gstAmount;
+        }
         const total = amount + gstAmount;
 
         // Create new table row
@@ -245,6 +260,22 @@ document.addEventListener('DOMContentLoaded', function() {
         row.remove();
         updateTotals();
     }
+
+    // Add this at the beginning of your script
+    const customerSelect = document.getElementById('customerName');
+    customerSelect.addEventListener('change', function() {
+        const selectedOption = this.options[this.selectedIndex];
+        customerState = selectedOption.dataset.state;
+        
+        if (this.value) {
+            productInputSection.style.opacity = '1';
+            productInputSection.style.pointerEvents = 'auto';
+        } else {
+            productInputSection.style.opacity = '0.6';
+            productInputSection.style.pointerEvents = 'none';
+            clearForm();
+        }
+    });
 });
 </script>
 {% endblock %}
