@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
+from django.core.cache import cache
 from .models import Product
 
 # Create your views here.
@@ -26,15 +27,12 @@ def addproduct(request):
             
             # Save the product
             product.save()
+            # Cache will be automatically updated via signals
             
-            # Add success message
             messages.success(request, 'Product added successfully!')
-            
-            # Redirect to view products page
             return redirect('viewproduct')
             
         except Exception as e:
-            # Handle any errors
             messages.error(request, f'Error adding product: {str(e)}')
             
     # For GET request, render form with choices
@@ -45,5 +43,6 @@ def addproduct(request):
     return render(request, 'product/addproduct.html', context)
 
 def viewproduct(request):
-    products = Product.objects.all()
+    # Get products from cache
+    products = Product.get_all_products()
     return render(request, 'product/viewproduct.html', {'products': products})

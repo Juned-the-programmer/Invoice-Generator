@@ -14,7 +14,9 @@
             <h2 class="mb-4">Estimate Sale</h2>
             
             <!-- Customer Details Form -->
-            <form class="bg-white p-4 rounded shadow-sm custom-form mb-4">
+            <form class="bg-white p-4 rounded shadow-sm custom-form mb-4" method="post" id="estimateForm">
+                {% csrf_token %}
+                <div id="hiddenInputs"></div>
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="billDate" class="form-label fw-bold">Date</label>
@@ -27,13 +29,14 @@
                 </div>
                 <div class="mb-3">
                     <label for="customerName" class="form-label fw-bold">Customer Name</label>
-                    <select class="form-control custom-input" id="customerName" required>
+                    <select class="form-control custom-input" id="customerName" name="customerName" required>
                         <option value="">Select a customer</option>
                         {% for customer in customers %}
                             <option value="{{ customer.id }}" data-state="{{ customer.state }}">{{ customer.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
+                <button type="submit" class="btn btn-primary">Generate Invoice</button>
             </form>
 
             <!-- Sale Products Section -->
@@ -48,7 +51,8 @@
                             {% for product in products %}
                                 <option value="{{ product.id }}" 
                                         data-unit="{{ product.unit }}" 
-                                        data-rate="{{ product.price }}">
+                                        data-rate="{{ product.price }}"
+                                        data-hsncode="{{ product.hsn_code }}">
                                     {{ product.name }}
                                 </option>
                             {% endfor %}
@@ -81,6 +85,7 @@
                 <table class="table table-bordered" id="productsTable">
                     <thead class="table-light">
                         <tr>
+                            <th>HSN Code</th>
                             <th>Product Name</th>
                             <th>Unit</th>
                             <th>Rate</th>
@@ -95,8 +100,9 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="6" class="text-end fw-bold">Grand Total:</td>
-                            <td colspan="2" id="grandTotal" class="fw-bold">0.00</td>
+                            <td colspan="7" class="text-end fw-bold">Grand Total:</td>
+                            <td id="grandTotal" class="fw-bold">0.00</td>
+                            <td></td>
                         </tr>
                     </tfoot>
                 </table>
@@ -142,8 +148,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // Get form values
         const productSelect = document.getElementById('productName');
         const selectedOption = productSelect.options[productSelect.selectedIndex];
-        const productName = selectedOption.text;  // Get the product name text
-        const productId = productSelect.value;    // Get the product ID
+        const productName = selectedOption.text;
+        const productId = productSelect.value;
 
         if (!productId) {
             alert('Please select a product');
@@ -169,8 +175,14 @@ document.addEventListener('DOMContentLoaded', function() {
         // Create new table row
         const tbody = document.getElementById('productTableBody');
         const newRow = tbody.insertRow();
+        
+        // Generate a unique row ID
+        const rowId = Date.now();
+        newRow.setAttribute('data-row-id', rowId);
+        
         newRow.innerHTML = `
-            <td>${productName}</td>
+            <td>${selectedOption.dataset.hsncode}</td>
+            <td data-product-id="${productId}">${productName}</td>
             <td>${unit}</td>
             <td>${rate.toFixed(2)}</td>
             <td>${quantity}</td>
@@ -183,6 +195,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 </button>
             </td>
         `;
+
+        // Add hidden inputs for this product
+        const hiddenInputs = document.getElementById('hiddenInputs');
+        const inputsDiv = document.createElement('div');
+        inputsDiv.setAttribute('data-row-id', rowId);
+        inputsDiv.innerHTML = `
+            <input type="hidden" name="productIds[]" value="${productId}">
+            <input type="hidden" name="quantities[]" value="${quantity}">
+            <input type="hidden" name="rates[]" value="${rate.toFixed(2)}">
+            <input type="hidden" name="discounts[]" value="${discount}">
+            <input type="hidden" name="netRates[]" value="${netRate.toFixed(2)}">
+            <input type="hidden" name="totals[]" value="${total.toFixed(2)}">
+        `;
+        hiddenInputs.appendChild(inputsDiv);
 
         // Clear form inputs
         clearForm();
@@ -242,11 +268,29 @@ function updateGrandTotal() {
     const tbody = document.getElementById('productTableBody');
     let grandTotal = 0;
     
+    // Sum up all totals from the table (using the Total column)
     for (let row of tbody.rows) {
-        grandTotal += parseFloat(row.cells[6].textContent);
+        const totalCell = row.cells[7]; // Index of the Total column
+        const totalValue = parseFloat(totalCell.textContent);
+        if (!isNaN(totalValue)) {
+            grandTotal += totalValue;
+        }
     }
     
+    // Update the display
     document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
 }
+
+document.getElementById('estimateForm').addEventListener('submit', function(e) {
+    // Debug log before submission
+    const productIds = Array.from(document.getElementsByName('productIds[]')).map(input => input.value);
+    console.log('Product IDs being submitted:', productIds);
+    
+    if (document.getElementById('productTableBody').rows.length === 0) {
+        e.preventDefault();
+        alert('Please add at least one product before generating the estimate');
+        return;
+    }
+});
 </script>
 {% endblock %}

@@ -1,4 +1,7 @@
 from django.db import models
+from django.core.cache import cache
+from django.db.models.signals import post_save, post_delete
+from django.dispatch import receiver
 
 class Customer(models.Model):
     first_name = models.CharField(max_length=100)
@@ -28,3 +31,27 @@ class Customer(models.Model):
 
     class Meta:
         ordering = ['-created_at']
+
+    @classmethod
+    def get_all_customers(cls):
+        # Try to get customers from cache
+        customers = cache.get('all_customers')
+        if customers is None:
+            # If not in cache, get from database
+            customers = list(cls.objects.all())
+            # Store in cache for future use
+            cache.set('all_customers', customers, timeout=None)
+        return customers
+
+# Signal handlers to update cache when customers are changed
+@receiver(post_save, sender=Customer)
+def update_customer_cache(sender, instance, **kwargs):
+    # Update the cache when a customer is added or modified
+    customers = list(Customer.objects.all())
+    cache.set('all_customers', customers, timeout=None)
+
+@receiver(post_delete, sender=Customer)
+def delete_customer_cache(sender, instance, **kwargs):
+    # Update the cache when a customer is deleted
+    customers = list(Customer.objects.all())
+    cache.set('all_customers', customers, timeout=None)

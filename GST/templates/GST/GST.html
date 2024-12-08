@@ -14,7 +14,8 @@
             <h2 class="text-center mb-4">GST Sale</h2>
             
             <!-- Customer Details Form -->
-            <form class="bg-white p-4 rounded shadow-sm custom-form mb-4">
+            <form class="bg-white p-4 rounded shadow-sm custom-form mb-4" method="post" id="gstForm">
+            {% csrf_token %}
                 <div class="row mb-3">
                     <div class="col-md-6">
                         <label for="billDate" class="form-label fw-bold">Date</label>
@@ -34,6 +35,7 @@
                         {% endfor %}
                     </select>
                 </div>
+                <button type="submit" class="btn btn-primary">Generate Invoice</button>
             </form>
 
             <!-- Sale Products Section -->
@@ -48,7 +50,8 @@
                             {% for product in products %}
                                 <option value="{{ product.id }}" 
                                         data-unit="{{ product.unit }}" 
-                                        data-rate="{{ product.price }}">
+                                        data-rate="{{ product.price }}"
+                                        data-hsncode="{{ product.hsn_code }}">
                                     {{ product.name }}
                                 </option>
                             {% endfor %}
@@ -66,10 +69,6 @@
                         <label for="quantity" class="form-label fw-bold">Qty.</label>
                         <input type="number" class="form-control custom-input" id="quantity" required>
                     </div>
-                    <div class="col-md-1">
-                        <label for="discount" class="form-label fw-bold">Dis(%)</label>
-                        <input type="number" class="form-control custom-input" id="discount" required>
-                    </div>
                     <div class="col-md-1 d-flex align-items-end">
                         <button type="button" class="btn btn-secondary custom-button w-100">Add</button>
                     </div>
@@ -81,12 +80,11 @@
                 <table class="table table-bordered" id="productsTable">
                     <thead class="table-light">
                         <tr>
+                            <th>HSN Code</th>
                             <th>Product Name</th>
                             <th>Unit</th>
                             <th>Rate</th>
                             <th>Qty.</th>
-                            <th>Dis(%)</th>
-                            <th>Net Rate</th>
                             <th>Amount</th>
                             <th>GST%</th>
                             <th>CGST</th>
@@ -100,14 +98,15 @@
                     </tbody>
                     <tfoot>
                         <tr>
-                            <td colspan="6" class="text-end fw-bold">Sub Total:</td>
+                            <td colspan="5" class="text-end fw-bold">Sub Total:</td>
                             <td id="subTotal" class="fw-bold">0.00</td>
-                            <td colspan="4" class="text-end fw-bold">Total GST:</td>
+                            <td colspan="3" class="text-end fw-bold">Total GST:</td>
                             <td id="totalGST" class="fw-bold">0.00</td>
+                            <td id="emptyCell"></td>
                             <td></td>
                         </tr>
                         <tr>
-                            <td colspan="11" class="text-end fw-bold">Grand Total:</td>
+                            <td colspan="10" class="text-end fw-bold">Grand Total:</td>
                             <td id="grandTotal" class="fw-bold">0.00</td>
                             <td></td>
                         </tr>
@@ -120,6 +119,32 @@
 
 <!-- Add this JavaScript at the end of your file -->
 <script>
+function updateTotals() {
+    const tbody = document.getElementById('productTableBody');
+    let subTotal = 0;
+    let totalGST = 0;
+    let grandTotal = 0;
+    
+    for (let row of tbody.rows) {
+        subTotal += parseFloat(row.cells[5].textContent);
+        const cgst = parseFloat(row.cells[7].textContent);
+        const sgst = parseFloat(row.cells[8].textContent);
+        const igst = parseFloat(row.cells[9].textContent);
+        totalGST += cgst + sgst + igst;
+        grandTotal += parseFloat(row.cells[10].textContent);
+    }
+    
+    document.getElementById('subTotal').textContent = subTotal.toFixed(2);
+    document.getElementById('totalGST').textContent = totalGST.toFixed(2);
+    document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
+}
+
+function removeProduct(button) {
+    const row = button.closest('tr');
+    row.remove();
+    updateTotals();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     const BUSINESS_STATE = 'Gujarat'; // Default business state
     let customerState = '';
@@ -169,7 +194,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const unit = document.getElementById('unit').value;
         const rate = parseFloat(document.getElementById('rate').value);
         const quantity = parseFloat(document.getElementById('quantity').value);
-        const discount = parseFloat(document.getElementById('discount').value) || 0;
         const gstRate = 18; // You might want to make this dynamic based on product category
 
         // Validate inputs
@@ -179,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Calculate values
-         const netRate = rate - (rate * discount / 100);
+         const netRate = rate;
         const amount = netRate * quantity;
         const gstAmount = (amount * gstRate) / 100;
         
@@ -204,12 +228,11 @@ document.addEventListener('DOMContentLoaded', function() {
         const tbody = document.getElementById('productTableBody');
         const newRow = tbody.insertRow();
         newRow.innerHTML = `
+            <td>${selectedOption.dataset.hsncode}</td>
             <td>${productName}</td>
             <td>${unit}</td>
             <td>${rate.toFixed(2)}</td>
             <td>${quantity}</td>
-            <td>${discount}</td>
-            <td>${netRate.toFixed(2)}</td>
             <td>${amount.toFixed(2)}</td>
             <td>${gstRate}</td>
             <td>${cgst.toFixed(2)}</td>
@@ -232,33 +255,6 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('unit').value = '';
         document.getElementById('rate').value = '';
         document.getElementById('quantity').value = '';
-        document.getElementById('discount').value = '';
-    }
-
-    function updateTotals() {
-        const tbody = document.getElementById('productTableBody');
-        let subTotal = 0;
-        let totalGST = 0;
-        let grandTotal = 0;
-        
-        for (let row of tbody.rows) {
-            subTotal += parseFloat(row.cells[6].textContent);
-            const cgst = parseFloat(row.cells[8].textContent);
-            const sgst = parseFloat(row.cells[9].textContent);
-            const igst = parseFloat(row.cells[10].textContent);
-            totalGST += cgst + sgst + igst;
-            grandTotal += parseFloat(row.cells[11].textContent);
-        }
-        
-        document.getElementById('subTotal').textContent = subTotal.toFixed(2);
-        document.getElementById('totalGST').textContent = totalGST.toFixed(2);
-        document.getElementById('grandTotal').textContent = grandTotal.toFixed(2);
-    }
-
-    function removeProduct(button) {
-        const row = button.closest('tr');
-        row.remove();
-        updateTotals();
     }
 
     // Add this at the beginning of your script
@@ -274,6 +270,61 @@ document.addEventListener('DOMContentLoaded', function() {
             productInputSection.style.opacity = '0.6';
             productInputSection.style.pointerEvents = 'none';
             clearForm();
+        }
+    });
+
+    document.getElementById('gstForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        // Gather all products from the table
+        const products = [];
+        const rows = document.getElementById('productTableBody').rows;
+        for (let row of rows) {
+            products.push({
+                hsn_code: row.cells[0].textContent,
+                name: row.cells[1].textContent,
+                unit: row.cells[2].textContent,
+                rate: row.cells[3].textContent,
+                quantity: row.cells[4].textContent,
+                amount: row.cells[5].textContent,
+                gst_rate: row.cells[6].textContent,
+                cgst: row.cells[7].textContent,
+                sgst: row.cells[8].textContent,
+                igst: row.cells[9].textContent,
+                total: row.cells[10].textContent
+            });
+        }
+
+        const invoiceData = {
+            billDate: document.getElementById('billDate').value,
+            billNo: document.getElementById('billNo').value,
+            customerId: document.getElementById('customerName').value,
+            products: products,
+            subTotal: document.getElementById('subTotal').textContent,
+            totalGST: document.getElementById('totalGST').textContent,
+            grandTotal: document.getElementById('grandTotal').textContent
+        };
+
+        try {
+            const response = await fetch(window.location.href, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+                },
+                body: JSON.stringify(invoiceData)
+            });
+
+            if (response.ok) {
+                // Create blob from response and open in new window
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                window.open(url, '_blank');
+            } else {
+                alert('Error generating invoice: ' + await response.text());
+            }
+        } catch (error) {
+            alert('Error generating invoice: ' + error.message);
         }
     });
 });

@@ -63,5 +63,5 @@ def addcustomer(request):
     return render(request, 'customer/addcustomer.html')
 
 def viewcustomer(request):
-    customers = Customer.objects.all()
+    customers = Customer.get_all_customers()
     return render(request, 'customer/viewcustomer.html', {'customers': customers})

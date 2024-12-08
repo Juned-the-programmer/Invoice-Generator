@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Invoice</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            font-size: 12px;
+        }
+        .header {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .company-logo {
+            float: left;
+            width: 100px;
+            margin-right: 20px;
+        }
+        .company-details {
+            margin-bottom: 20px;
+        }
+        .company-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        .company-address {
+            margin-bottom: 5px;
+        }
+        .contact {
+            float: right;
+            margin-top: -40px;
+        }
+        .invoice-title {
+            text-align: right;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        .customer-box {
+            border: 1px solid #000;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+        .invoice-details {
+            border: 1px solid #000;
+            padding: 10px;
+            float: right;
+            width: 200px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #000;
+            padding: 8px;
+            text-align: left;
+        }
+        .dotted-line {
+            border-bottom: 1px dotted #000;
+        }
+        .footer {
+            margin-top: 20px;
+        }
+        .terms {
+            float: left;
+            width: 60%;
+        }
+        .signature {
+            float: right;
+            text-align: right;
+            width: 40%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src=""C:\Users\davda\Pictures\Screenshots\Screenshot 2024-12-08 140633.png"" alt="Cream Top" class="company-logo">
+        <div class="company-name">THE KABIR FOOD PRODUCTS</div>
+        <div class="company-details">
+            Mfg. and Trading of ice cream etc.<br>
+            State Highway No. 41, Nr. Patel Hotel, At. Chhapi Highway,<br>
+            Ta. Vadgam, Dist. Banaskantha, Gujarat - 385210.
+        </div>
+        <div class="contact">Mo. 7600 433 909</div>
+        <div class="invoice-title">TAX INVOICE</div>
+    </div>
+
+    <div class="customer-box">
+        <div>NAME : {{ customer.name }}</div>
+        <div class="dotted-line">ADDRESS : {{ customer.address }}</div>
+        <div>GSTIN : {{ customer.gst_number }} STATE CODE : {{ customer.state_code }}</div>
+    </div>
+
+    <div class="invoice-details">
+        <div>Book No. : </div>
+        <div>Invoice No. : {{ bill_number }}</div>
+        <div>Date : {{ bill_date }}</div>
+        <div>Vehicle No. : </div>
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Sr.<br>No.</th>
+                <th>Name of Goods</th>
+                <th>HSN<br>CODE</th>
+                <th>Qty.</th>
+                <th>RATE</th>
+                <th>Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ product.name }}</td>
+                <td>{{ product.hsn_code }}</td>
+                <td>{{ product.quantity }}</td>
+                <td>{{ product.rate }}</td>
+                <td>{{ product.amount }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div>
+        <div>GSTIN : 24AILPG8535F1Z9</div>
+        <div>fssai : Lic No. 10717005000256</div>
+        
+        <div style="float: right;">
+            <table style="width: 300px;">
+                <tr>
+                    <td>Total</td>
+                    <td>{{ sub_total }}</td>
+                </tr>
+                <tr>
+                    <td>SGST @ {{ sgst_rate }}%</td>
+                    <td>{{ total_sgst }}</td>
+                </tr>
+                <tr>
+                    <td>CGST @ {{ cgst_rate }}%</td>
+                    <td>{{ total_cgst }}</td>
+                </tr>
+                <tr>
+                    <td>IGST @ {{ igst_rate }}%</td>
+                    <td>{{ total_igst }}</td>
+                </tr>
+                <tr>
+                    <td><strong>G. TOTAL</strong></td>
+                    <td><strong>{{ grand_total }}</strong></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="footer" style="clear: both; margin-top: 30px;">
+        <div class="terms">
+            1. Goods Once Sold will not be Returned or Exchanged.<br>
+            2. Subject to Palanpur Jurisdiction.
+        </div>
+        <div class="signature">
+            For, The Kabir Food Products<br><br>
+            Authorised Signature
+        </div>
+    </div>
+</body>
+</html> 
