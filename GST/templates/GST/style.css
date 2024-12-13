@@ -1,0 +1,205 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    background: #f0f0f0;
+}
+
+.invoice-container {
+    max-width: 210mm;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+header {
+    border-bottom: 2px solid #000;
+    margin-bottom: 20px;
+}
+
+.logo-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.logo {
+    text-align: center;
+    width: 100px;
+}
+
+.logo p {
+    text-align: center;
+    font-weight: bold;
+}
+
+.logo small {
+    font-size: 10px;
+}
+
+.company-info {
+    text-align: left;
+    flex-grow: 1;
+    padding: 0 10px;
+}
+
+.company-info h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.company-info p {
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight:bold;
+}
+
+.contact {
+    margin-right: -100px;
+    width: 150px;
+    text-align: right;
+}
+
+.document-title {
+    text-align: left;
+    margin-top: 100px;
+}
+
+.boxes-container {
+    display: flex; /* Use Flexbox to align the boxes side by side */
+    justify-content: space-between; /* Space them out evenly */
+    gap: 10px; /* Optional: Adds some space between the boxes */
+}
+
+.customer-detail-box {
+    width: 525px;
+    height: 200px;
+    border: 2px solid black;
+    padding: 10px;
+}
+
+.customer-detail-box .field {
+    display: flex;
+    align-items: center;
+    margin: 10px; /* Space between fields */
+}
+
+.customer-detail-box label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.customer-detail-box .input-line {
+    flex-grow: 1;
+    border-bottom: 1px solid #000;
+    height: 20px;
+}
+
+.GST-detail-box {
+    width: 220px;
+    height: 200px;
+    border: 2px solid black;
+}
+
+.customer-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.left-details, .right-details {
+    width: 48%;
+}
+
+.field {
+    margin-bottom: 10px;
+}
+
+.input-line {
+    border-bottom: 1px solid #000;
+    min-height: 20px;
+    margin-top: 5px;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+.items-table th, .items-table td {
+    border: 1px solid #000;
+    padding: 8px;
+    text-align: left;
+}
+
+.items-table th {
+    background: #f5f5f5;
+}
+
+.items-table td {
+    min-height: 25px;
+}
+
+.invoice-footer {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.gstin-section {
+    width: 60%;
+}
+
+.totals-section {
+    width: 35%;
+}
+
+.total-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.total-row .input-line {
+    width: 150px;
+}
+
+.grand-total {
+    font-weight: bold;
+    border-top: 1px solid #000;
+    padding-top: 5px;
+}
+
+.terms {
+    margin-bottom: 20px;
+}
+
+.signature {
+    text-align: right;
+}
+
+.sign-line {
+    border-bottom: 1px solid #000;
+    width: 200px;
+    margin: 20px 0 5px auto;
+}
+
+@media print {
+    body {
+        padding: 0;
+        background: white;
+    }
+    
+    .invoice-container {
+        box-shadow: none;
+    }
+}
