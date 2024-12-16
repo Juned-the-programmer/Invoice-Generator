@@ -80,118 +80,65 @@ header {
 
 .customer-detail-box {
     width: 525px;
-    height: 200px;
+    height: 170px;
     border: 2px solid black;
     padding: 10px;
 }
 
-.customer-detail-box .field {
+.GST-detail-box {
+    width: 220px;
+    height: 170px;
+    border: 2px solid black;
+}
+
+.field {
     display: flex;
     align-items: center;
     margin: 10px; /* Space between fields */
 }
 
-.customer-detail-box label {
+label {
     font-size: 14px;
     font-weight: bold;
     margin-right: 10px;
 }
 
-.customer-detail-box .input-line {
+.input-line {
     flex-grow: 1;
     border-bottom: 1px solid #000;
     height: 20px;
 }
 
-.GST-detail-box {
-    width: 220px;
-    height: 200px;
-    border: 2px solid black;
+.table-container {
+    margin-top: 20px;
+    border-top: 2px solid #000;
+    padding-top: 10px;
 }
 
-.customer-details {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.left-details, .right-details {
-    width: 48%;
-}
-
-.field {
-    margin-bottom: 10px;
-}
-
-.input-line {
-    border-bottom: 1px solid #000;
-    min-height: 20px;
-    margin-top: 5px;
-}
-
-.items-table {
+table {
     width: 100%;
     border-collapse: collapse;
-    margin-bottom: 20px;
 }
 
-.items-table th, .items-table td {
-    border: 1px solid #000;
-    padding: 8px;
+th, td {
+    padding: 10px;
     text-align: left;
+    border: 1px solid #000;
 }
 
-.items-table th {
-    background: #f5f5f5;
-}
-
-.items-table td {
-    min-height: 25px;
-}
-
-.invoice-footer {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 20px;
-}
-
-.gstin-section {
-    width: 60%;
-}
-
-.totals-section {
-    width: 35%;
-}
-
-.total-row {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-}
-
-.total-row .input-line {
-    width: 150px;
-}
-
-.grand-total {
+th {
+    background-color: #f2f2f2;
     font-weight: bold;
-    border-top: 1px solid #000;
-    padding-top: 5px;
 }
 
-.terms {
-    margin-bottom: 20px;
-}
-
-.signature {
+td {
     text-align: right;
 }
 
-.sign-line {
-    border-bottom: 1px solid #000;
-    width: 200px;
-    margin: 20px 0 5px auto;
+td:nth-child(2) {
+    text-align: left; /* Align Name of Goods to the left */
 }
+
 
 @media print {
     body {
