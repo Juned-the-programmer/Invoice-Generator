@@ -124,6 +124,7 @@ th, td {
     padding: 10px;
     text-align: left;
     border: 1px solid #000;
+    line-height: 1.2;
 }
 
 th {
@@ -135,8 +136,26 @@ td {
     text-align: right;
 }
 
-td:nth-child(2) {
-    text-align: left; /* Align Name of Goods to the left */
+th:nth-child(1), td:nth-child(1) {
+    width: 5%;
+    text-align: center;
+}
+
+th:nth-child(2), td:nth-child(2) { /* Target the Name of Goods column */
+    width: 30%;
+    text-align: left;
+}
+
+th:nth-child(3), td:nth-child(3) { /* Target the HSN CODE column */
+    width: 15%;
+    text-align: center;
+}
+
+th:nth-child(4), td:nth-child(4), /* Target Qty column */
+th:nth-child(5), td:nth-child(5), /* Target Rate column */
+th:nth-child(6), td:nth-child(6) { /* Target Amount column */
+    width: 10%;
+    text-align: right;
 }
 
 
