@@ -278,8 +278,19 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Gather all products from the table
         const products = [];
+        let total_cgst = 0;
+        let total_sgst = 0;
+        let total_igst = 0;
         const rows = document.getElementById('productTableBody').rows;
         for (let row of rows) {
+            const cgst = parseFloat(row.cells[7].textContent.trim() || '0');
+            const sgst = parseFloat(row.cells[8].textContent.trim() || '0');
+            const igst = parseFloat(row.cells[9].textContent.trim() || '0');
+
+            total_cgst += cgst;
+            total_sgst += sgst;
+            total_igst += igst;
+
             products.push({
                 hsn_code: row.cells[0].textContent,
                 name: row.cells[1].textContent,
@@ -295,6 +306,11 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         }
 
+        total_cgst = total_cgst.toFixed(2);
+        total_sgst = total_sgst.toFixed(2);
+        total_igst = total_igst.toFixed(2);
+
+
         const invoiceData = {
             billDate: document.getElementById('billDate').value,
             billNo: document.getElementById('billNo').value,
@@ -302,6 +318,9 @@ document.addEventListener('DOMContentLoaded', function() {
             products: products,
             subTotal: document.getElementById('subTotal').textContent,
             totalGST: document.getElementById('totalGST').textContent,
+            total_cgst: total_cgst,
+            total_sgst: total_sgst,
+            total_igst: total_igst,
             grandTotal: document.getElementById('grandTotal').textContent
         };
 
