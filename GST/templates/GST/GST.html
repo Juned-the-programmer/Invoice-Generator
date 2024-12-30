@@ -23,7 +23,7 @@
                     </div>
                     <div class="col-md-6">
                         <label for="billNo" class="form-label fw-bold">Bill Number</label>
-                        <input type="text" class="form-control custom-input bg-light" id="billNo" required readonly>
+                        <input type="text" class="form-control custom-input bg-light" id="billNo" value={{bill_number}} required readonly>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -152,16 +152,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const today = new Date().toISOString().split('T')[0];
     document.getElementById('billDate').value = today;
 
-    // Initialize bill number (you might want to fetch this from backend)
-    document.getElementById('billNo').value = generateBillNumber();
-
     const addButton = document.querySelector('.custom-button');
     addButton.addEventListener('click', addProduct);
-
-    function generateBillNumber() {
-        // This is a simple example - you might want to get this from your backend
-        return 'EST-' + Date.now();
-    }
 
     // Add product selection handler
     const productSelect = document.getElementById('productName');

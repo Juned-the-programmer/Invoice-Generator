@@ -6,11 +6,37 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 import json
 from num2words import num2words
+from django.conf import settings
+import os
 
 # Create your views here.
+
+# Path to the bill number JSON file
+BILL_NUMBER_FILE = os.path.join(settings.BASE_DIR, "GST/bill_number.json")
+
+def get_current_bill_number():
+    """Get the current bill number from the JSON file."""
+    if not os.path.exists(BILL_NUMBER_FILE):
+        with open(BILL_NUMBER_FILE, "w") as file:
+            json.dump({"current_bill_no": "001"}, file)
+    with open(BILL_NUMBER_FILE, "r") as file:
+        data = json.load(file)
+        return data["current_bill_no"]
+
+def increment_bill_number():
+    """Increment the bill number in the JSON file."""
+    current_bill_no = get_current_bill_number()
+    new_bill_no = str(int(current_bill_no) + 1).zfill(3)
+    with open(BILL_NUMBER_FILE, "w") as file:
+        json.dump({"current_bill_no": new_bill_no}, file)
+    return current_bill_no
+
+
 def GST_Invoice(request):
     if request.method == 'GET':
+        bill_no = get_current_bill_number()
         context = {
+            'bill_number' : bill_no,
             'customers': Customer.get_all_customers(),
             'products': Product.get_all_products(),
         }
@@ -59,6 +85,8 @@ def GST_Invoice(request):
             
             # Create response
             response = HttpResponse(pdf, content_type='application/pdf')
+            increment_bill_number()
+
             response['Content-Disposition'] = 'inline; filename="invoice.pdf"'
             return response
             

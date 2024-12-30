@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tax Invoice - The Kabir Food Products</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<style>
+
+@page {
+    margin: 0;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    padding: 20px;
+    background: #f0f0f0;
+    margin: 0;
+}
+
+.invoice-container {
+    max-width: 210mm;
+    margin: 0;
+    background: white;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+header {
+    border-bottom: 2px solid #000;
+    margin-bottom: 20px;
+}
+
+.logo-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.logo {
+    text-align: center;
+    width: 100px;
+}
+
+.logo p {
+    text-align: center;
+    font-weight: bold;
+}
+
+.logo small {
+    font-size: 10px;
+}
+
+.company-info {
+    text-align: left;
+    flex-grow: 1;
+    padding: 0 10px;
+}
+
+.company-info h2 {
+    font-size: 24px;
+    margin-bottom: 5px;
+}
+
+.company-info p {
+    font-size: 16px;
+    margin-bottom: 5px;
+    font-weight:bold;
+}
+
+.contact {
+    width: 150px;
+    text-align: right;
+}
+
+.document-title {
+    text-align: left;
+    margin-top: 100px;
+}
+
+.boxes-container {
+    display: flex; /* Use Flexbox to align the boxes side by side */
+    justify-content: space-between; /* Space them out evenly */
+    gap: 10px; /* Optional: Adds some space between the boxes */
+}
+
+.customer-detail-box {
+    width: 525px;
+    height: 170px;
+    border: 2px solid black;
+    padding: 10px;
+}
+
+.GST-detail-box {
+    width: 220px;
+    height: 170px;
+    border: 2px solid black;
+}
+
+.field {
+    display: flex;
+    align-items: center;
+    margin: 10px; /* Space between fields */
+}
+
+label {
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
+}
+
+.input-line {
+    flex-grow: 1;
+    border-bottom: 1px solid #000;
+    height: 20px;
+}
+
+.table-container {
+    margin-top: 20px;
+    border-top: 2px solid #000;
+    padding-top: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #000;
+    line-height: 1.2;
+}
+
+th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+td {
+    text-align: right;
+}
+
+th:nth-child(1), td:nth-child(1) {
+    width: 5%;
+    text-align: center;
+}
+
+th:nth-child(2), td:nth-child(2) { /* Target the Name of Goods column */
+    width: 40%;
+    text-align: left;
+}
+
+th:nth-child(3), td:nth-child(3) { /* Target the HSN CODE column */
+    width: 15%;
+    text-align: center;
+}
+
+th:nth-child(4), td:nth-child(4), /* Target Qty column */
+th:nth-child(5), td:nth-child(5)
+th:nth-child(6), td:nth-child(6) {
+    width: 10%;
+    text-align: right;
+} /* Target Rate column */
+th:nth-child(7), td:nth-child(7) { /* Target Amount column */
+    width: 15%;
+    text-align: right;
+}
+
+
+@media print {
+    body {
+        padding: 0;
+        background: white;
+    }
+    
+    .invoice-container {
+        box-shadow: none;
+    }
+}
+</style>
+<body>
+    <div class="invoice-container">
+        <header>
+            <div class="logo-section">
+                <div class="logo">
+                    <h3>CREAM TOP</h3>
+                    <p>ICE CREAM</p>
+                    <small>Believe in Quality</small>
+                </div>
+                <div class="company-info">
+                    <h2>THE KABIR FOOD PRODUCTS</h2>
+                    <p>Mfg. and Trading of ice cream etc.</p>
+                    <p>State Highway No. 41, Nr. Patel Hotel, At. Chhapi Highway,</p>
+                    <p>Ta. Vadgam, Dist. Banaskantha, Gujarat - 385210.</p>
+                </div>
+                <div class="contact">
+                    <p>Mo. 7600 433 909</p>
+                </div>
+            </div>
+        </header>
+        <div class="boxes-container">
+            <div class="customer-detail-box">
+                <div class="field">
+                    <label>NAME : </label>
+                    <div class="input-line">{{customer.name}}</div>
+                </div>
+                <div class="field">
+                    <label>ADDRESS : </label>
+                    <div class="input-line">{{customer.address}}</div>
+                </div>
+                <div class="field">
+                    <div class="input-line">{{customer.city}}, {{customer.state}}, {{customer.landmark}}</div>
+                </div>
+                <div class="field">
+                    <label>GSTIN : </label>
+                    <div class="input-line">{{customer.gst_number}}</div>
+                    <label>STATE CODE : </label>
+                    <div class="input-line">{{customer.state}}</div>
+                </div>
+            </div>
+            <div class="GST-detail-box">
+                <div class="field">
+                    <label>Book No : </label>
+                    <div class="input-line"></div>
+                </div>
+                <div class="field">
+                    <label>Invoice No : </label>
+                    <div class="input-line">{{bill_number}}</div>
+                </div>
+                <div class="field">
+                    <label>Date : </label>
+                    <div class="input-line">{{bill_date}}</div>
+                </div>
+                <div class="field">
+                    <label>Vehicle No : </label>
+                    <div class="input-line"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add this section after the boxes-container -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th width="10">Sr.No</th>
+                        <th>Name of Goods</th>
+                        <th>HSN CODE</th>
+                        <th>Qty.</th>
+                        <th>Rate</th>
+                        <th>Disc</th>
+                        <th>Net Rate</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in products %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{i.name}}</td>
+                        <td>{{i.hsn_code}}</td>
+                        <td>{{i.quantity}}</td>
+                        <td>{{i.rate}}</td>
+                        <td>{{i.discount}}</td>
+                        <td>{{i.net_rate}}</td>
+                        <td>{{i.Total}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5" style="text-align: left;"><h4>GSTIN : 24AILPG8535F1Z9</h4></td>
+                        <td colspan="2" style="text-align: right;"><h4>Total</h4></td>
+                        <td colspan="1" style="text-align: right;"><h4>{{grand_total}}</h4></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" style="text-align: left;"><h4>FSSAI : Lic No. 1071700500256</h4></td>
+                        <td colspan="2" style="text-align: left;"><h4>SGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</h4></td>
+                        <td colspan="1" style="text-align: right;"><h4>----------</h4></td>
+                    </tr>
+                    <tr>
+                        <td colspan="5" rowspan="3" style="text-align: left; vertical-align: top;">
+                            <div class="field">
+                                <label>Rupees In Word : </label>
+                                <div class="input-line">{{rupee_in_word}}</div>
+                            </div>
+                            <div class="field">
+                                <div class="input-line"></div>
+                            </div>
+                        </td>
+                        <td colspan="2" style="text-align: left;"><h4>CGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</h4></td>
+                        <td colspan="1" style="text-align: right;"><h4>----------</h4></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left;"><h4>IGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</h4></td>
+                        <td colspan="1" style="text-align: right;"><h4>----------</h4></td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" style="text-align: left;"><h4>G. TOTAL</h4></td>
+                        <td colspan="1" style="text-align: right;"><h4>{{grand_total}}</h4></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <p style="font-size: 15px;">1. Goods Once Sold will not be Returned or Exchanged.</p>
+        <p style="font-size: 15px;">2. Subject to Palanpur Jurisdiction.</p>
+
+        <div style="text-align: right; margin-top: 20px;"> 
+            <p>For, <strong>The Kabir Food Products</strong></p>
+            <p>Authorised Signature</p>
+        </div>
+    </div>
+</body>
+</html>
