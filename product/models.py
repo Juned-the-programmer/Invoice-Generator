@@ -5,18 +5,13 @@ from django.dispatch import receiver
 
 class Product(models.Model):
     CATEGORY_CHOICES = [
-        ('electronics', 'Electronics'),
-        ('clothing', 'Clothing'),
-        ('food', 'Food'),
-        ('other', 'Other'),
+        ('Candy', 'Candy'),
+        ('Cup', 'Cup'),
+        ('Cone', 'Cone'),
     ]
     
     UNIT_CHOICES = [
-        ('piece', 'Piece'),
-        ('kg', 'Kilogram'),
-        ('liter', 'Liter'),
-        ('meter', 'Meter'),
-        ('dozen', 'Dozen'),
+        ('Box', 'Box'),
     ]
     
     hsn_code = models.CharField(
