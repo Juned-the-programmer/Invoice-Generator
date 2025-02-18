@@ -10,7 +10,6 @@ class Customer(models.Model):
     phone = models.CharField(max_length=15, blank=True, null=True)
     gst_number = models.CharField(
         max_length=15, 
-        unique=True, 
         blank=True, 
         null=True,
         help_text="15-digit GST number (e.g., 22AAAAA0000A1Z5)"
