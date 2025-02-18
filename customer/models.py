@@ -6,8 +6,8 @@ from django.dispatch import receiver
 class Customer(models.Model):
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
-    phone = models.CharField(max_length=15, blank=True)
+    email = models.EmailField(null=True, blank=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
     gst_number = models.CharField(
         max_length=15, 
         unique=True, 

@@ -66,6 +66,7 @@ def GST_Invoice(request):
             context = {
                 'bill_date': data.get('billDate'),
                 'bill_number': data.get('billNo'),
+                'vehicle_number' : data.get('vehicleNo'),
                 'customer': customer,
                 'products': data.get('products', []),
                 'sub_total': data.get('subTotal'),

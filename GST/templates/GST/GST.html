@@ -26,14 +26,20 @@
                         <input type="text" class="form-control custom-input bg-light" id="billNo" value={{bill_number}} required>
                     </div>
                 </div>
-                <div class="mb-3">
-                    <label for="customerName" class="form-label fw-bold">Customer Name</label>
-                    <select class="form-control custom-input" id="customerName" required>
-                        <option value="">Select a customer</option>
-                        {% for customer in customers %}
-                            <option value="{{ customer.id }}" data-state="{{ customer.state }}">{{ customer.name }}</option>
-                        {% endfor %}
-                    </select>
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <label for="customerName" class="form-label fw-bold">Customer Name</label>
+                        <select class="form-control custom-input" id="customerName" required>
+                            <option value="">Select a customer</option>
+                            {% for customer in customers %}
+                                <option value="{{ customer.id }}" data-state="{{ customer.state }}">{{ customer.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="VehicleNo" class="form-label fw-bold">Vehicle Number</label>
+                        <input type="text" class="form-control custom-input" id="vehicle_no">
+                    </div>
                 </div>
                 <button type="submit" class="btn btn-primary">Generate Invoice</button>
             </form>
@@ -307,6 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
             billDate: document.getElementById('billDate').value,
             billNo: document.getElementById('billNo').value,
             customerId: document.getElementById('customerName').value,
+            vehicleNo: document.getElementById('vehicle_no').value,
             products: products,
             subTotal: document.getElementById('subTotal').textContent,
             totalGST: document.getElementById('totalGST').textContent,

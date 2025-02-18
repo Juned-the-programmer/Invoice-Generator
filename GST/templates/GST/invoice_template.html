@@ -94,7 +94,7 @@ header {
 }
 
 .customer-detail-box {
-    width: 525px;
+    width: 500px;
     height: 170px;
     border: 2px solid black;
     padding: 10px;
@@ -228,7 +228,13 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                     <label>GSTIN : </label>
                     <div class="input-line">{{customer.gst_number}}</div>
                     <label>STATE CODE : </label>
-                    <div class="input-line">{{customer.state}}</div>
+                    <div class="input-line">
+                    {% if customer.state == "Gujarat" %}
+                        08
+                    {% elif customer.state == "Rajasthan" %}
+                        24
+                    {% endif %}
+                    </div>
                 </div>
             </div>
             <div class="GST-detail-box">
@@ -246,7 +252,7 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                 </div>
                 <div class="field">
                     <label>Vehicle No : </label>
-                    <div class="input-line"></div>
+                    <div class="input-line">{{vehicle_number}}</div>
                 </div>
             </div>
         </div>
@@ -284,7 +290,7 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: left;"><h4>FSSAI : Lic No. 1071700500256</h4></td>
-                        <td colspan="2" style="text-align: left;"><h4>SGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</h4></td>
+                        <td colspan="2" style="text-align: left;"><h4>SGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9%</h4></td>
                         <td colspan="1" style="text-align: right;"><h4>{{total_sgst}}</h4></td>
                     </tr>
                     <tr>
@@ -297,11 +303,11 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                                 <div class="input-line"></div>
                             </div>
                         </td>
-                        <td colspan="2" style="text-align: left;"><h4>CGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</h4></td>
+                        <td colspan="2" style="text-align: left;"><h4>CGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9%</h4></td>
                         <td colspan="1" style="text-align: right;"><h4>{{total_cgst}}</h4></td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: left;"><h4>IGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%</h4></td>
+                        <td colspan="2" style="text-align: left;"><h4>IGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18%</h4></td>
                         <td colspan="1" style="text-align: right;"><h4>{{total_igst}}</h4></td>
                     </tr>
                     <tr>
