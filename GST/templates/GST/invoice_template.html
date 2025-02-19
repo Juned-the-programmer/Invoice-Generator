@@ -230,9 +230,9 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                     <label>STATE CODE : </label>
                     <div class="input-line">
                     {% if customer.state == "Gujarat" %}
-                        08
-                    {% elif customer.state == "Rajasthan" %}
                         24
+                    {% elif customer.state == "Rajasthan" %}
+                        08
                     {% endif %}
                     </div>
                 </div>
@@ -289,7 +289,7 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                         <td colspan="1" style="text-align: right;"><h4>{{sub_total}}</h4></td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: left;"><h4>FSSAI : Lic No. 1071700500256</h4></td>
+                        <td colspan="3" style="text-align: left;"><h4>FSSAI : Lic No. 10717005000256</h4></td>
                         <td colspan="2" style="text-align: left;"><h4>SGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9%</h4></td>
                         <td colspan="1" style="text-align: right;"><h4>{{total_sgst}}</h4></td>
                     </tr>
