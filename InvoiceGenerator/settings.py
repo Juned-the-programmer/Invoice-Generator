@@ -25,11 +25,11 @@ SECRET_KEY = 'django-insecure-9e5*i8w(ffjmv-rae%&x4%$xb6o^2_#9(kp*mi3*#c1@q8sgbw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*', 'https://*.ngrok-free.app']
+ALLOWED_HOSTS = ['*', 'https://*.vercel.app']
 
-CORS_ALLOWED_ORIGINS = ['https://*.ngrok-free.app']
+CORS_ALLOWED_ORIGINS = ['https://*.vercel.app']
 
-CSRF_TRUSTED_ORIGINS = ['https://*.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://*.vercel.app']
 
 
 # Application definition
@@ -139,3 +139,5 @@ CACHES = {
         'LOCATION': 'unique-snowflake',
     }
 }
+
+DISABLE_COLLECTSTATIC = 1

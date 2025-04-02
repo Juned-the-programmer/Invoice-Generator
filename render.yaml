@@ -1,0 +1,15 @@
+services:
+  - name: creamtop
+    type: web
+    env: docker
+    repo: https://github.com/YOUR_USERNAME/YOUR_REPO
+    plan: free
+    envVars:
+      - key: DJANGO_SECRET_KEY
+        sync: false
+      - key: DATABASE_URL
+        value: "sqlite:///db.sqlite3"  # Change if using PostgreSQL
+      - key: DJANGO_DEBUG
+        value: "false"
+    healthCheckPath: /
+    autoDeploy: true
