@@ -3,6 +3,8 @@ services:
     type: web
     env: python
     plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn InvoiceGenerator.wsgi
     envVars:
       - key: DJANGO_SECRET_KEY
         sync: false
