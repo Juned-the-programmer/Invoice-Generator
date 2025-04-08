@@ -1,1 +1,1 @@
-web: gunicorn InvoiceGenerator.wsgi
+web: gunicorn InvoiceGenerator.wsgi:application

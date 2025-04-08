@@ -2,9 +2,8 @@ services:
   - name: creamtop
     type: web
     env: python
-    plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn InvoiceGenerator.wsgi:application
+    plan: free
     envVars:
       - key: DJANGO_SECRET_KEY
         sync: false
