@@ -1,8 +1,7 @@
 services:
   - name: creamtop
     type: web
-    env: docker
-    repo: https://github.com/YOUR_USERNAME/YOUR_REPO
+    env: python
     plan: free
     envVars:
       - key: DJANGO_SECRET_KEY

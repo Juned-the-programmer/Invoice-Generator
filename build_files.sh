@@ -9,4 +9,4 @@ apt-get install -y --no-install-recommends \
     shared-mime-info
 
 # Install Python dependencies
-pip install -r requirements.txt
+pip install -r requirements.txt1`12
