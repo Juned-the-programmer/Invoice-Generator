@@ -2,10 +2,14 @@ services:
   - name: creamtop
     type: web
     runtime: python-3.12.0
-    buildCommand: "./build.sh"
+    buildCommand: bash build.sh  # Force execution with bash
     startCommand: "gunicorn InvoiceGenerator.wsgi:application --workers 4 --bind 0.0.0.0:$PORT"
     plan: free
     envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: DJANGO_SETTINGS_MODULE
+        value: InvoiceGenerator.settings
       - key: DJANGO_SECRET_KEY
         sync: false
       - key: DATABASE_URL

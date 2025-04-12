@@ -1,18 +1,23 @@
 #!/usr/bin/env bash
 set -o errexit
+set -x  # Enable command echoing
 
-# System dependencies for WeasyPrint
+echo "=== STARTING BUILD ==="
+pwd
+ls -la
+
+echo "Installing system dependencies..."
 apt-get update
 apt-get install -y \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
     libcairo2
-echo "System Dependency successfully"
 
-# Python dependencies
+echo "Installing Python packages..."
+pip install --upgrade pip
 pip install -r requirements.txt
-echo "Requirements Done"
 
-# Database setup
+echo "Running migrations..."
 python manage.py migrate
-echo "Build completed successfully"
+
+echo "=== BUILD COMPLETE ==="
