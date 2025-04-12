@@ -9,8 +9,10 @@ services:
       - key: DJANGO_SECRET_KEY
         sync: false
       - key: DATABASE_URL
-        value: sqlite:///db.sqlite3
+        value: "sqlite:///db.sqlite3"
       - key: DJANGO_DEBUG
-        value: false
+        value: "false"
+      - key: PORT
+        value: "8000"
     healthCheckPath: /
     autoDeploy: true
