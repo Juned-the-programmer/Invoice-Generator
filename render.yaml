@@ -3,13 +3,13 @@ services:
     type: web
     env: python
     buildCommand: "./build.sh"
-    startCommand: "gunicorn --workers 4 --bind 0.0.0.0:$PORT InvoiceGenerator.asgi:application"
+    startCommand: "gunicorn InvoiceGenerator.wsgi:application --workers 4 --bind 0.0.0.0:$PORT"
     plan: free
     envVars:
       - key: DJANGO_SECRET_KEY
         sync: false
       - key: DATABASE_URL
-        value: "sqlite:///db.sqlite3"  # Change if using PostgreSQL
+        value: "sqlite:///db.sqlite3"
       - key: DJANGO_DEBUG
         value: "false"
     healthCheckPath: /
