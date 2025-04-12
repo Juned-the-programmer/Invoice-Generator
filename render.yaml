@@ -3,7 +3,7 @@ services:
     type: web
     env: python
     buildCommand: "./build.sh"
-    startCommand: "python -m gunicorn InvoiceGenerator.asgi:application -k uvicorn.workers.UvicornWorker"
+    startCommand: "gunicorn InvoiceGenerator.asgi:application"
     plan: free
     envVars:
       - key: DJANGO_SECRET_KEY
