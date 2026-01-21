@@ -90,6 +90,36 @@ header {
     text-align: right;
 }
 
+.tax-label {
+    text-align: left;
+    display: block;
+    margin: 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.tax-label-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    width: 100%;
+}
+
+.tax-label-left,
+.tax-label-right {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.tax-amount {
+    text-align: right;
+    display: block;
+    margin: 0;
+    font-weight: bold;
+    font-size: 16px;
+}
+
 .boxes-container {
     display: flex; /* Use Flexbox to align the boxes side by side */
     justify-content: space-between; /* Space them out evenly */
@@ -295,8 +325,13 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                     </tr>
                     <tr>
                         <td colspan="3" style="text-align: left;"><h4>FSSAI : Lic No. 10717005000256</h4></td>
-                        <td colspan="2" style="text-align: left;"><h4>SGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9%</h4></td>
-                        <td colspan="1" style="text-align: right;"><h4>{{total_sgst}}</h4></td>
+                        <td colspan="2">
+                            <span class="tax-label-row">
+                                <span class="tax-label-left">SGST @</span>
+                                <span class="tax-label-right">2.5%</span>
+                            </span>
+                        </td>
+                        <td colspan="1"><span class="tax-amount">{{total_sgst}}</span></td>
                     </tr>
                     <tr>
                         <td colspan="3" rowspan="3" style="text-align: left; vertical-align: top;">
@@ -308,16 +343,26 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                                 <div class="input-line"></div>
                             </div>
                         </td>
-                        <td colspan="2" style="text-align: left;"><h4>CGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;9%</h4></td>
-                        <td colspan="1" style="text-align: right;"><h4>{{total_cgst}}</h4></td>
+                        <td colspan="2">
+                            <span class="tax-label-row">
+                                <span class="tax-label-left">CGST @</span>
+                                <span class="tax-label-right">2.5%</span>
+                            </span>
+                        </td>
+                        <td colspan="1"><span class="tax-amount">{{total_cgst}}</span></td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: left;"><h4>IGST @ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;18%</h4></td>
-                        <td colspan="1" style="text-align: right;"><h4>{{total_igst}}</h4></td>
+                        <td colspan="2">
+                            <span class="tax-label-row">
+                                <span class="tax-label-left">IGST @</span>
+                                <span class="tax-label-right">5%</span>
+                            </span>
+                        </td>
+                        <td colspan="1"><span class="tax-amount">{{total_igst}}</span></td>
                     </tr>
                     <tr>
-                        <td colspan="2" style="text-align: left;"><h4>G. TOTAL</h4></td>
-                        <td colspan="1" style="text-align: right;"><h4>{{grand_total}}</h4></td>
+                        <td colspan="2"><span class="tax-label">G. TOTAL</span></td>
+                        <td colspan="1"><span class="tax-amount">{{grand_total}}</span></td>
                     </tr>
                 </tfoot>
             </table>
