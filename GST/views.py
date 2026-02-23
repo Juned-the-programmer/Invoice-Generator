@@ -13,6 +13,7 @@ import os
 
 # Path to the bill number JSON file
 BILL_NUMBER_FILE = os.path.join(settings.BASE_DIR, "GST/bill_number.json")
+BUSINESS_STATE = "Gujarat"
 
 def get_current_bill_number():
     """Get the current bill number from the JSON file."""
@@ -50,12 +51,42 @@ def GST_Invoice(request):
             # Get customer details
             customer = Customer.objects.get(id=data.get('customerId'))
 
-            # Get grandTotal and handle conversion
-            grand_total = data.get('grandTotal', '0')  # Default to '0' if not provided
+            products = data.get('products', [])
+
+            # Recalculate totals on the server to avoid client-side trust issues
             try:
-                grand_total = float(grand_total)  # Convert to float
+                sub_total = 0.0
+                total_cgst = 0.0
+                total_sgst = 0.0
+                total_igst = 0.0
+
+                is_intra_state = customer.state.strip().lower() == BUSINESS_STATE.lower()
+
+                for p in products:
+                    qty = float(p.get('quantity', 0) or 0)
+                    rate = float(p.get('rate', 0) or 0)
+                    amount = rate * qty
+                    sub_total += amount
+
+                    gst_rate = float(p.get('gst_rate', 5) or 0)
+                    gst_amount = (amount * gst_rate) / 100
+
+                    if is_intra_state:
+                        cgst = gst_amount / 2
+                        sgst = gst_amount / 2
+                        igst = 0
+                    else:
+                        cgst = 0
+                        sgst = 0
+                        igst = gst_amount
+
+                    total_cgst += cgst
+                    total_sgst += sgst
+                    total_igst += igst
+
+                grand_total = sub_total + total_cgst + total_sgst + total_igst
             except ValueError:
-                return HttpResponse("Invalid grandTotal value", status=400)
+                return HttpResponse("Invalid numeric value in products", status=400)
 
             #Get the Rupee in words
             integer_part = int(grand_total)
@@ -68,12 +99,12 @@ def GST_Invoice(request):
                 'bill_number': data.get('billNo'),
                 'vehicle_number' : data.get('vehicleNo'),
                 'customer': customer,
-                'products': data.get('products', []),
-                'sub_total': data.get('subTotal'),
-                'total_sgst': data.get('total_sgst', '0.00'),
-                'total_cgst': data.get('total_cgst', '0.00'),
-                'total_igst': data.get('total_igst', '0.00'),
-                'grand_total': data.get('grandTotal'),
+                'products': products,
+                'sub_total': f"{sub_total:.2f}",
+                'total_sgst': f"{total_sgst:.2f}",
+                'total_cgst': f"{total_cgst:.2f}",
+                'total_igst': f"{total_igst:.2f}",
+                'grand_total': f"{grand_total:.2f}",
                 'rupee_in_word': rupee_in_word
             }
             

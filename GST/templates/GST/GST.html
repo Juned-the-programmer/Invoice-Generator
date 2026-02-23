@@ -192,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const unit = document.getElementById('unit').value;
         const rate = parseFloat(document.getElementById('rate').value);
         const quantity = parseFloat(document.getElementById('quantity').value);
-        const gstRate = 18; // You might want to make this dynamic based on product category
+        const gstRate = 5; // Total GST% (2.5% CGST + 2.5% SGST for intra-state, 5% IGST for inter-state)
 
         // Validate inputs
         if (!productName || !unit || !rate || !quantity) {
