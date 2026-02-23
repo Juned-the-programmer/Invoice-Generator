@@ -40,9 +40,10 @@ header {
 }
 
 .logo-section {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
+    display: grid;
+    grid-template-columns: 110px 1fr 170px;
+    column-gap: 16px;
+    align-items: start;
 }
 
 .logo {
@@ -62,7 +63,7 @@ header {
 .company-info {
     text-align: left;
     flex-grow: 1;
-    padding: 0 10px;
+    padding: 0 6px;
 }
 
 .company-info h2 {
@@ -72,19 +73,21 @@ header {
 
 .company-info p {
     font-size: 16px;
-    margin-bottom: 5px;
+    margin-bottom: 0px;
     font-weight:bold;
 }
 
 .contact {
-    margin-right: -100px;
-    width: 150px;
     text-align: right;
 }
 
 .document-title {
-    text-align: left;
-    margin-top: 100px;
+    margin-top: 8px;
+    text-align: right;
+}
+
+.header-right {
+    text-align: right;
 }
 
 .boxes-container {
@@ -199,17 +202,17 @@ th:nth-child(6), td:nth-child(6) { /* Target Amount column */
                 </div>
                 <div class="company-info">
                     <h2>KABIR FOOD</h2>
-                    <p>Mfg. and Trading of ice cream etc.</p>
-                    <p>MILKAT NO - 5963 & 5964, S.NO - 286</p>
-                    </p>OLD MILKAT NO-4116/31 & 4116/32</p>
-                    <p>MAHI - APPROACH ROAD</p>
+                    <p>Mfg. by KABIR FOOD</p>
+                    <p>MILKAT NO - 5963 & 5964, S.NO - 286, OLD MILKAT NO-4116/31 & 4116/32, MAHI - APPROACH ROAD</p>
                     <p>Ta. Vadgam, Dist. Banaskantha, Gujarat - 385210.</p>
                 </div>
-                <div class="contact">
-                    <p>Mo. 7600 433 909</p>
-                </div>
-                <div class="document-title">
-                    <h4>TAX INVOICE</h4>
+                <div class="header-right">
+                    <div class="contact">
+                        <p>Mo. 7600 433 909</p>
+                    </div>
+                    <div class="document-title">
+                        <h4>TAX INVOICE</h4>
+                    </div>
                 </div>
             </div>
         </header>
